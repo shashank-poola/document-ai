@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 from app.schemas.enums import DocumentType
 from app.schemas.extraction import (
     ExtractionResult,
-    InvoiceFields,
     PurchaseOrderFields,
     ReceiptFields,
 )
@@ -63,17 +62,9 @@ def _confidence_from_fields(**fields: str | None) -> float:
 
 class InvoiceExtractor(BaseExtractor):
     def extract(self, segment: DocumentSegment, text: str) -> ExtractionResult:
-        fields = InvoiceFields(
-            invoice_number=_first_match(INVOICE_NUMBER_PATTERN, text),
-            invoice_date=_first_date(text),
-            vendor_name=_first_match(VENDOR_PATTERN, text),
-            buyer_name=_first_match(BUYER_PATTERN, text),
-            currency=_first_match(CURRENCY_PATTERN, text),
-            subtotal=_extract_labeled_amount(text, "subtotal"),
-            tax=_extract_labeled_amount(text, "tax"),
-            total=_extract_labeled_amount(text, "total"),
-            due_date=_extract_labeled_amount(text, "due") or _second_date(text),
-        )
+        from app.extraction.invoice_layout import extract_invoice_fields
+
+        fields = extract_invoice_fields(text)
         confidence = _confidence_from_fields(**fields.model_dump())
         return ExtractionResult(
             segment_id=segment.segment_id,
@@ -81,6 +72,7 @@ class InvoiceExtractor(BaseExtractor):
             fields=fields,
             raw_text=text,
             extraction_confidence=confidence,
+            provider="layout_heuristic",
         )
 
 

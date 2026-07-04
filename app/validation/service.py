@@ -8,7 +8,16 @@ from app.schemas.validation import FieldValidation, ValidationResult
 
 ISO_CURRENCIES = frozenset({"USD", "EUR", "GBP", "INR", "JPY", "CAD", "AUD"})
 SYMBOL_TO_CURRENCY = {"$": "USD", "€": "EUR", "£": "GBP", "₹": "INR"}
-DATE_FORMATS = ("%Y-%m-%d", "%d/%m/%Y", "%m/%d/%Y", "%d-%m-%Y", "%m-%d-%Y", "%d.%m.%Y")
+DATE_FORMATS = (
+    "%Y-%m-%d",
+    "%d/%m/%Y",
+    "%m/%d/%Y",
+    "%d-%m-%Y",
+    "%m-%d-%Y",
+    "%d.%m.%Y",
+    "%B %d, %Y",
+    "%B %d %Y",
+)
 
 
 def _parse_amount(value: str | None) -> float | None:

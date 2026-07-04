@@ -16,7 +16,11 @@ def _redis_settings() -> RedisSettings:
 
 
 async def get_redis_pool() -> ArqRedis:
-    return await create_pool(_redis_settings())
+    settings = get_settings()
+    return await create_pool(
+        _redis_settings(),
+        default_queue_name=settings.queue_name,
+    )
 
 
 async def enqueue_document_job(job_id: UUID) -> str:
@@ -25,11 +29,11 @@ async def enqueue_document_job(job_id: UUID) -> str:
     pool = await get_redis_pool()
     payload = JobEnqueuePayload(job_id=job_id)
 
+    # Job timeout is configured on WorkerSettings.job_timeout, not per enqueue.
     job = await pool.enqueue_job(
         "process_document",
         payload.model_dump(mode="json"),
         _queue_name=settings.queue_name,
-        _job_timeout=settings.job_timeout_seconds,
     )
     await pool.close()
 

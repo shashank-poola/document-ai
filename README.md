@@ -17,6 +17,74 @@ Upload API  →  Redis Queue  →  Worker Pool  →  Pipeline
 
 **Queue:** [ARQ](https://github.com/python-arq/arq) on Redis — Python-native equivalent of BullMQ's worker pattern (Redis-backed jobs, retries, timeouts, horizontal scaling).
 
+### 6. Start the web UI (optional, separate terminal)
+
+```bash
+cd web
+bun install   # or npm install
+bun dev       # opens http://localhost:5173
+```
+
+Drag & drop PDFs, images, or DOCX files. The UI uploads to the API, polls job status, and displays JSON / Markdown output.
+
+## How Companies Upload Documents (Current Version)
+
+| Method | How |
+|--------|-----|
+| **Web UI** | `http://localhost:5173` — drag & drop or browse (supports batch upload) |
+| **REST API** | `POST /api/v1/documents/upload` with `multipart/form-data` |
+| **cURL** | `curl -F "file=@invoice.pdf" http://localhost:8000/api/v1/documents/upload` |
+
+There is no SharePoint/S3/email connector yet — those are Phase 5+ roadmap items.
+
+## Environment Variables (`.env`)
+
+Copy `.env.example` to `.env` in the project root:
+
+```env
+APP_NAME=document-intelligence
+APP_ENV=development
+LOG_LEVEL=INFO
+API_HOST=0.0.0.0
+API_PORT=8000
+
+STORAGE_ROOT=./data
+MAX_UPLOAD_SIZE_MB=50
+
+REDIS_URL=redis://localhost:6379/0
+QUEUE_NAME=document-processing
+JOB_TIMEOUT_SECONDS=600
+JOB_MAX_RETRIES=3
+
+OCR_LANG=en
+OCR_USE_GPU=false
+OCR_DPI=200
+PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK=True
+
+REVIEW_CONFIDENCE_THRESHOLD=0.75
+```
+
+For production, set `APP_ENV=production`, point `REDIS_URL` to your managed Redis, and increase worker count.
+
+## Processing Time Estimates (500 PDFs)
+
+Rough estimates with the **current** stack (PaddleOCR on CPU, 1–2 pages per PDF):
+
+| Setup | Time to first result | Time for all 500 |
+|-------|---------------------|------------------|
+| 1 worker, CPU | ~30–90 sec | ~4–8 hours |
+| 4 workers, CPU | ~30–90 sec | ~1–2 hours |
+| 8 workers + GPU | ~15–30 sec | ~30–60 min |
+
+Assumptions: average 1–2 page scanned/digital PDF, ~30–60 sec OCR per page on CPU. Digital PDFs with extractable text are faster (native text path skips full OCR).
+
+**What the company sees:**
+- First completed JSON/Markdown within **~1 minute** of worker picking up the first job
+- Results appear incrementally as each document finishes (not all at once)
+- Web UI shows live queue status per file
+
+To process 500 PDFs faster: run multiple workers (`uv run docintel-worker` in N terminals) and/or enable `OCR_USE_GPU=true` with a CUDA GPU.
+
 ## Development Phases
 
 | Phase | Scope | Status |
