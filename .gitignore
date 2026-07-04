@@ -1,0 +1,23 @@
+# Runtime data (jobs, outputs)
+data/jobs/
+data/outputs/
+
+# Environment
+.env
+
+# PaddleOCR model cache
+.paddleocr/
+.paddlex/
+
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.venv/
+
+# IDE
+.idea/
+.vscode/
