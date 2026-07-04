@@ -26,7 +26,10 @@ def invoice_ocr() -> list[OCRPageResult]:
     return [OCRPageResult(page_number=1, full_text=text, average_confidence=0.95)]
 
 
-def test_classifies_invoice(invoice_segment: DocumentSegment, invoice_ocr: list[OCRPageResult]) -> None:
+def test_classifies_invoice(
+    invoice_segment: DocumentSegment,
+    invoice_ocr: list[OCRPageResult],
+) -> None:
     classifier = HeuristicClassifier()
     result = classifier.classify_segment(invoice_segment, invoice_ocr)
 
@@ -34,7 +37,10 @@ def test_classifies_invoice(invoice_segment: DocumentSegment, invoice_ocr: list[
     assert result.classification_confidence > 0
 
 
-def test_extracts_invoice_fields(invoice_segment: DocumentSegment, invoice_ocr: list[OCRPageResult]) -> None:
+def test_extracts_invoice_fields(
+    invoice_segment: DocumentSegment,
+    invoice_ocr: list[OCRPageResult],
+) -> None:
     from app.extraction.extractors import InvoiceExtractor
 
     extractor = InvoiceExtractor()
@@ -48,7 +54,10 @@ def test_extracts_invoice_fields(invoice_segment: DocumentSegment, invoice_ocr: 
     assert result.extraction_confidence > 0
 
 
-def test_validates_invoice_totals(invoice_segment: DocumentSegment, invoice_ocr: list[OCRPageResult]) -> None:
+def test_validates_invoice_totals(
+    invoice_segment: DocumentSegment,
+    invoice_ocr: list[OCRPageResult],
+) -> None:
     from app.extraction.extractors import InvoiceExtractor
     from app.validation import ValidationService
 

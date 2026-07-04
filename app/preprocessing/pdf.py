@@ -2,7 +2,6 @@ from pathlib import Path
 from uuid import UUID
 
 import fitz
-from PIL import Image
 
 from app.config import get_settings
 from app.schemas.enums import PageSource

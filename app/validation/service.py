@@ -117,7 +117,11 @@ class ValidationService:
         validations: list[FieldValidation] = []
 
         for field_name, value in field_map.items():
-            if field_name.endswith("_date") or field_name == "due_date" or field_name == "delivery_date":
+            is_date_field = (
+                field_name.endswith("_date")
+                or field_name in {"due_date", "delivery_date"}
+            )
+            if is_date_field:
                 validations.append(_validate_date(field_name, value))
             elif field_name == "currency":
                 validations.append(_validate_currency(value))

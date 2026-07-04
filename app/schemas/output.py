@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
-from app.schemas.enums import DocumentType, JobStatus
+from app.schemas.enums import JobStatus
 from app.schemas.extraction import ExtractionResult
 from app.schemas.segment import DocumentSegment
 from app.schemas.validation import ValidationResult

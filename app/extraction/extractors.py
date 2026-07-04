@@ -13,10 +13,12 @@ from app.schemas.segment import DocumentSegment
 DATE_PATTERN = re.compile(
     r"\b(\d{1,2}[/\-.]\d{1,2}[/\-.]\d{2,4}|\d{4}[/\-.]\d{1,2}[/\-.]\d{1,2})\b"
 )
-CURRENCY_PATTERN = re.compile(r"\b(USD|EUR|GBP|INR|JPY|CAD|AUD|\$|€|£|₹)\b", re.IGNORECASE)
-AMOUNT_PATTERN = re.compile(r"(?:total|amount|subtotal|tax)[:\s]*([₹$€£]?\s?[\d,]+\.?\d*)", re.IGNORECASE)
+CURRENCY_PATTERN = re.compile(
+    r"\b(USD|EUR|GBP|INR|JPY|CAD|AUD|\$|€|£|₹)\b",
+    re.IGNORECASE,
+)
 INVOICE_NUMBER_PATTERN = re.compile(
-    r"(?:invoice\s*(?:no|number|#)?[:\s]*)([A-Z0-9\-/]+)",
+    r"(?:invoice\s*(?:no|number|#)\s*[:\s.]*)([A-Z0-9][A-Z0-9\-/]*)",
     re.IGNORECASE,
 )
 RECEIPT_NUMBER_PATTERN = re.compile(

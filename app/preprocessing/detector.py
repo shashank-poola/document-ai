@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from app.schemas.enums import FileFormat
-from app.schemas.page import Page
 
 
 def detect_file_format(filename: str) -> FileFormat:

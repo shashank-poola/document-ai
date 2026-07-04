@@ -1,6 +1,8 @@
+# ruff: noqa: B008
+
 from uuid import UUID
 
-from fastapi import APIRouter, File, UploadFile, status
+from fastapi import APIRouter, File, HTTPException, UploadFile, status
 
 from app.ingestion.service import IngestionService
 from app.schemas import JobStatusResponse
@@ -30,8 +32,6 @@ async def get_job_result(job_id: UUID) -> PipelineOutput:
     """Retrieve structured extraction results for a completed job."""
     status_response = _service.get_status(job_id)
     if status_response.status not in {JobStatus.COMPLETED, JobStatus.NEEDS_REVIEW}:
-        from fastapi import HTTPException
-
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"Job is not ready. Current status: {status_response.status}",

@@ -1,4 +1,3 @@
-from app.schemas.enums import DocumentType
 from app.schemas.ocr import OCRPageResult
 from app.schemas.segment import DocumentSegment
 from app.utils.logging import get_logger
